@@ -20,6 +20,9 @@ class ProductsTableSeeder extends Seeder
             50,
             50.01,
             51,
+            66.66,
+            66.67,
+            67,
             99,
             99.99,
             100,
@@ -30,10 +33,6 @@ class ProductsTableSeeder extends Seeder
             1000,
             1000.01,
             1001,
-            66.66,
-            66.67,
-            67,
-            1000,
         ];
 
         foreach ($data as $index => $value) {
