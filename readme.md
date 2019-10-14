@@ -1,6 +1,6 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# Coupon Cart
 
-## Coupon Cart
+## Overview
 
 This is a very basic, minimally styled shopping cart application that uses:
 
@@ -16,6 +16,10 @@ This is a very basic, minimally styled shopping cart application that uses:
   * Create, Retrieve, Update and Delete (_CRUD_) for the cart
 * Discounts coupons, when applicable, will apply to the cart
 * Ability to checkout, or finalise the cart
+
+Coupons can simply be reused all the time.
+
+**Note:** Therefore, don't use this code for a production e-commerce cart unless you truly want that behaviour!
 
 ## Store / Admin Functionality
 
@@ -36,6 +40,7 @@ This is a very basic, minimally styled shopping cart application that uses:
 
 * We are NOT developing the full "e-commerce experience"
 * Only one single coupon may be entered at one time
+* Coupons never expire and they will apply for ANY user
 
 The instructions say:
 
@@ -50,7 +55,7 @@ Thank you for considering contributing to the application!
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within the application, please send an e-mail to [David Lloyd](jwickentower@gmail.com).
+If you discover a security vulnerability within the application, please send an e-mail to [David Lloyd](mailto:jwickentower@gmail.com).
 
 ## License
 
