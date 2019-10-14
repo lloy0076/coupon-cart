@@ -50,8 +50,9 @@ Thank you for considering contributing to the application!
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within the application, please send an e-mail to David Lloyd [jwickentower@gmail.com].
+If you discover a security vulnerability within the application, please send an e-mail to [David Lloyd](jwickentower@gmail.com).
 
 ## License
 
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This application is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
