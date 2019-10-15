@@ -10,17 +10,6 @@ class ProductsTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private $setup = true;
-
-    /**
-     * Test Products
-     *
-     * 1. We should be able to get a product.
-     * 2. We should be able to get them.
-     * 3. The number in the description, multiplied by 100, should be the price retrieved from the model.
-     *
-     * @return void
-     */
     public function testProduct()
     {
         $this->seed();
@@ -31,17 +20,19 @@ class ProductsTest extends TestCase
         $allProducts = $products->get();
         $this->assertIsNotNumeric($products, "There are some products");
 
+        // Verify each found product.
         foreach ($allProducts as $index => $product) {
             $name = $product->name;
             list ($expectedPrice, $rest) = explode(' ', $name);
 
             $this->assertEquals("Item", $rest, "It should be the word 'Item'");
-            $this->assertEquals($expectedPrice * 100,
+
+            $this->assertEquals($expectedPrice,
                 $product->price,
                 "The expected price $expectedPrice should be " . $product->price);
 
-            $this->assertNull($product->tax_percent, "Tax is not implemented and should be null.");
-            $this->assertNull($product->tax_description, "Tax is not implemented and should be null.");
+            $this->assertNotFalse(filter_var($product->image, FILTER_VALIDATE_URL),
+                "The image should be a URL: " . $product->image);
         }
     }
 }
