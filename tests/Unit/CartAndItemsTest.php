@@ -27,7 +27,7 @@ class CartAndItemsTest extends TestCase
         $theCart = Cart::where("instructions", "Cart with two items")->first();
 
         $this->assertNotNull($theCart, "Cart with two items exists");
-        $this->assertCount(2, $theCart->cartItems, "There are two items");
+        $this->assertEquals(2, $theCart->numberOfCartItems(), "There are two items");
         $this->assertEquals(99.44, (float)$theCart->total_inc, "The total inc should be 99.44");
     }
 
@@ -38,7 +38,7 @@ class CartAndItemsTest extends TestCase
         $theCart = Cart::where("instructions", "Cart with one item")->first();
 
         $this->assertNotNull($theCart, "Cart with two items exists");
-        $this->assertCount(1, $theCart->cartItems, "There is only one item");
+        $this->assertEquals(1, $theCart->numberOfCartItems(), "There is only one item");
         $this->assertEquals(49.00, (float)$theCart->total_inc, "The total inc should be 49.00");
     }
 
