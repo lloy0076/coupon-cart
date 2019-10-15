@@ -18,7 +18,7 @@ class ProductsTest extends TestCase
         $this->assertIsObject($products, "It is a product");
 
         $allProducts = $products->get();
-        $this->assertIsNotNumeric($products, "There are some products");
+        $this->assertGreaterThan(0, count($allProducts), "There are some products");
 
         // Verify each found product.
         foreach ($allProducts as $index => $product) {

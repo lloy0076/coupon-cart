@@ -47,6 +47,16 @@ class Cart extends Model
     }
 
     /**
+     * Return the number of cart items.
+     *
+     * @return int
+     */
+    public function numberOfCartItems()
+    {
+        return count($this->cartItems);
+    }
+
+    /**
      * Adds a single item.
      *
      * @param \App\Models\Product $product
@@ -105,7 +115,7 @@ class Cart extends Model
         $didSave = $this->save();
 
         if (!$didSave) {
-            throw new \Exception("Failed to update cartt with id " . $this->id);
+            throw new \Exception("Failed to update cart with id " . $this->id);
         }
 
         return $this;

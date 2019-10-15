@@ -1,9 +1,8 @@
 <?php
 
 use App\Models\Cart;
-use App\Models\CartItem;
-use App\Models\Coupon;
 use App\Models\Product;
+use App\User;
 use Illuminate\Database\Seeder;
 
 class CartSeeder extends Seeder
@@ -16,10 +15,10 @@ class CartSeeder extends Seeder
      */
     public function run()
     {
-        $user = \App\User::orderBy('id')->first();
+        $user = User::orderBy('id')->first();
 
         if (true || !isset($user)) {
-            $user = factory(\App\User::class)->create();
+            $user = factory(User::class)->create();
         }
 
         $products = Product::get();
