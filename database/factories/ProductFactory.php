@@ -12,8 +12,6 @@ $factory->define(Product::class,
             'name'            => $faker->unique()->word,
             'sku'             => (string)Str::uuid(),
             'price'           => $faker->numberBetween(0, 1000),
-            'tax_percent'     => null,
-            'tax_description' => null,
             'description'     => $faker->paragraphs(2, true),
             'image'           => $faker->imageUrl(200, 200, 'cats'),
         ];

@@ -7,26 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     /**
-     * Gets the price in cents.
+     * Get the tax inclusive price.
      *
      * @return float|int
      */
-    public function getPriceAttribute()
+    public function getPriceIncAttribute()
     {
-        return $this->attributes['price'] * 100;
-    }
+        $taxPercent = $this->tax_percent;
 
-    /**
-     * Gets the tax per cent divided by 100 (usually between 0 and 1) _or_ returns null.
-     *
-     * @return float|int|null
-     */
-    public function getTaxPercentAttribute()
-    {
-        if (isset($this->attributes['tax_percent'])) {
-            return $this->attributes['tax_percent'] / 100;
-        } else {
-            return null;
+        if (isset($taxPercent) && $taxPercent > 0) {
+            return $this->price * (1 + $taxPercent / 100);
         }
+
+        return $this->price;
     }
 }
