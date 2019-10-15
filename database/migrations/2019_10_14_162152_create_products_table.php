@@ -18,8 +18,6 @@ class CreateProductsTable extends Migration
             $table->string('name', 255);
             $table->string('sku', 40);
             $table->decimal('price', 8, 2);
-            $table->decimal('tax_percent', 3,2)->nullable();
-            $table->string('tax_description', 255)->nullable();
             $table->text('description')->nullable();
             $table->string('image', 255)->nullable();
             $table->timestamps();
