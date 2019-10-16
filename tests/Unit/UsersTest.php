@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Constants;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
@@ -22,9 +23,13 @@ class UsersTest extends TestCase
         $this->seed();
 
         $userModels = new User();
-        $this->assertTrue($userModels instanceof User, "It is a " . User::class);
+        $this->assertInstanceOf(User::class, $userModels, "It is a user class");
 
         $user = $userModels->where('email', 'jwickentower@gmail.com')->first();
-        $this->assertNotNull($user, "User jwickentower@gmail.com exists");
+        $this->assertNotNull($user, "User exists");
+
+        $adminUser = $userModels->where('email', 'lloy0076@adam.com.au')->first();
+        $this->assertNotNull($adminUser, "User exists");
+        $this->assertTrue($adminUser->hasRole(Constants::ROLE_ADMIN));
     }
 }
