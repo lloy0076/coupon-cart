@@ -29,6 +29,10 @@
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+
+        <!--  The tests do run on MySQL (or SQLite on disk) but 5-10 mins; in memory SQLite takes about 10-20 seconds! -->
+        <!--  <server name="DB_CONNECTION" value="mysql"/>-->
+
         <server name="DB_CONNECTION" value="sqlite_testing"/>
     </php>
 </phpunit>
