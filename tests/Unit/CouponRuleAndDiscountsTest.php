@@ -2,72 +2,191 @@
 
 namespace Tests\Unit;
 
+use App\Models\Cart;
 use App\Models\Coupon;
-use App\Models\CouponRule;
+use Exception;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Tests\TestCase;
 
+/**
+ * Class CouponRuleAndDiscountsTest
+ *
+ * This set of tests parses for syntax - it does not check if the coupon processor calculates totals properly.
+ *
+ * @package Tests\Unit
+ */
 class CouponRuleAndDiscountsTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testCouponRules()
+    /**
+     * The expression language object.
+     *
+     * @var
+     */
+    protected $interpreter;
+
+    public function setUp(): void
     {
-        $this->seed();
+        parent::setUp();
 
-        $coupon = Coupon::first();
-        $this->assertIsObject($coupon, "It is a coupon");
-
-        $rules = $coupon->couponRules();
-        $rules = $rules->get();
-
-        $this->assertNotNull($rules, "There are some rules");
-        $this->assertCount(3, $rules, "There should be 3 rules");
-
-        // Tests rules made by hash only.
-        $this->assertEquals("Coupon Rule 1", $rules[0]->description, "Its description should be 'Coupon Rule 1'");
-        $this->assertEquals('"one" == "one"', $rules[0]->rule, "Its rule should be \"one\" == \"one\"");
-        $this->assertEquals(CouponRule::RULE_COUPON, $rules[0]->rule_type, "It should be a coupon rule");
-
-        // Test rules made via "new rule".
-        $this->assertEquals("Coupon Rule 2", $rules[1]->description, "Its description should be 'Coupon Rule 2'");
-        $this->assertEquals('true == true', $rules[1]->rule, "Its rule should be 'true' == 'true'");
-        $this->assertEquals(CouponRule::RULE_COUPON, $rules[1]->rule_type, "It should be a coupon rule");
-
-
-        // Tests a rule made via MakeNewCouponRule with odd/wrong rule type (it should still come out as a coupon rule).
-        $this->assertEquals("Coupon Rule 3", $rules[2]->description, "Its description should be 'Coupon Rule 3'");
-        $this->assertEquals('true == true', $rules[2]->rule, "Its rule should be 'true' == 'true'");
-        $this->assertEquals(CouponRule::RULE_COUPON, $rules[2]->rule_type, "It should be a coupon rule");
+        $this->interpreter = new ExpressionLanguage();
     }
 
-    public function testDiscountRules()
+    public function testFixed10()
     {
         $this->seed();
 
-        $coupon = Coupon::first();
-        $this->assertIsObject($coupon, "It is a coupon");
+        $cart = Cart::first();
+        $this->assertNotNull($cart, "There should be at least one cart");
 
-        $rules = $coupon->discountRules();
-        $rules = $rules->get();
+        $coupon = Coupon::where('coupon_code', 'FIXED10');
+        $this->assertTrue($coupon->exists(), "The FIXED10 coupon should exist");
 
-        $this->assertNotNull($rules, "There are some rules");
-        $this->assertCount(3, $rules, "There should be 3 rules");
+        $coupon = $coupon->first();
 
-        // Tests rules made by hash only.
-        $this->assertEquals("Discount Rule 1", $rules[0]->description, "Its description should be 'Discount Rule 1'");
-        $this->assertEquals("100", $rules[0]->rule, "Its rule should be '100'");
-        $this->assertEquals(CouponRule::RULE_DISCOUNT, $rules[0]->rule_type, "It should be a coupon rule");
+        $this->assertEquals("Fixed 10", $coupon->display_name);
+        $this->assertTrue((bool)$coupon->stop_processing);
 
-        // Test rules made via "new rule".
-        $this->assertEquals("Discount Rule 2", $rules[1]->description, "Its description should be 'Discount Rule 2'");
-        $this->assertEquals("50", $rules[1]->rule, "Its rule should be '50'");
-        $this->assertEquals(CouponRule::RULE_DISCOUNT, $rules[1]->rule_type, "It should be a coupon rule");
+        $couponExpression = $coupon->coupon_rule_expression;
+        $this->assertEquals("cart.grossCartCost() > 50 and cart.numberOfCartItems() > 0", $couponExpression);
 
+        try {
+            $result = $this->interpreter->evaluate($couponExpression, ['cart' => $cart]);
+            $this->assertIsBool($result, "The result should be a boolean");
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
 
-        // Tests a rule made via MakeNewCouponRule with odd/wrong rule type (it should still come out as a coupon rule).
-        $this->assertEquals("Discount Rule 3", $rules[2]->description, "Its description should be 'Discount Rule 3'");
-        $this->assertEquals("25", $rules[2]->rule, "Its rule should be '25'");
-        $this->assertEquals(CouponRule::RULE_DISCOUNT, $rules[2]->rule_type, "It should be a coupon rule");
+        $discountExpression = $coupon->coupon_discount_expression;
+        $this->assertEquals('"$10"', $discountExpression);
+
+        $result = null;
+
+        try {
+            $result = $this->interpreter->evaluate($discountExpression, ['cart' => $cart]);
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $this->assertEquals('$10', $result, "Result $result");
+    }
+
+    public function testPercent10()
+    {
+        $this->seed();
+
+        $cart = Cart::first();
+        $this->assertNotNull($cart, "There should be at least one cart");
+
+        $coupon = Coupon::where('coupon_code', 'PERCENT10');
+        $this->assertTrue($coupon->exists(), "The PERCENT10 coupon should exist");
+
+        $coupon = $coupon->first();
+
+        $this->assertEquals("Percent 10", $coupon->display_name);
+        $this->assertTrue((bool)$coupon->stop_processing);
+
+        $couponExpression = $coupon->coupon_rule_expression;
+        $this->assertEquals('cart.numberOfCartItems() > 1 and cart.grossCartCost() > 100', $couponExpression);
+
+        try {
+            $result = $this->interpreter->evaluate($couponExpression, ['cart' => $cart]);
+            $this->assertIsBool($result, "The result should be a boolean");
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $discountExpression = $coupon->coupon_discount_expression;
+        $this->assertEquals('"%10"', $discountExpression);
+
+        $result = null;
+
+        try {
+            $result = $this->interpreter->evaluate($discountExpression, ['cart' => $cart]);
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $this->assertEquals('%10', $result);
+    }
+
+    public function testMixed10()
+    {
+        $this->seed();
+
+        $cart = Cart::first();
+        $this->assertNotNull($cart, "There should be at least one cart");
+
+        $coupon = Coupon::where('coupon_code', 'MIXED10');
+        $this->assertTrue($coupon->exists(), "The MIXED10 coupon should exist");
+
+        $coupon = $coupon->first();
+
+        $this->assertEquals("Mixed 10", $coupon->display_name);
+        $this->assertTrue((bool)$coupon->stop_processing);
+
+        $couponExpression = $coupon->coupon_rule_expression;
+        $this->assertEquals('cart.grossCartCost() > 200 and cart.numberOfCartItems() > 2', $couponExpression);
+
+        try {
+            $result = $this->interpreter->evaluate($couponExpression, ['cart' => $cart]);
+            $this->assertIsBool($result, "The result should be a boolean");
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $discountExpression = $coupon->coupon_discount_expression;
+        $this->assertEquals('cart.grossCartCost() * 0.1 > 10 ? "%10" : "$10"', $discountExpression);
+
+        $result = null;
+
+        try {
+            $result = $this->interpreter->evaluate($discountExpression, ['cart' => $cart]);
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $this->assertEquals('$10', $result);
+    }
+
+    public function testRejected10()
+    {
+        $this->seed();
+
+        $cart = Cart::first();
+        $this->assertNotNull($cart, "There should be at least one cart");
+
+        $coupon = Coupon::where('coupon_code', 'REJECTED10');
+        $this->assertTrue($coupon->exists(), "The REJECTED10 coupon should exist");
+
+        $coupon = $coupon->first();
+
+        $this->assertEquals("Rejected 10", $coupon->display_name);
+        $this->assertTrue((bool)$coupon->stop_processing);
+
+        $couponExpression = $coupon->coupon_rule_expression;
+        $this->assertEquals('cart.grossCartCost() > 1000', $couponExpression);
+
+        try {
+            $result = $this->interpreter->evaluate($couponExpression, ['cart' => $cart]);
+            $this->assertIsBool($result, "The result should be a boolean");
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $discountExpression = $coupon->coupon_discount_expression;
+        $this->assertEquals('"$10;%10"', $discountExpression);
+
+        $result = null;
+
+        try {
+            $result = $this->interpreter->evaluate($discountExpression, ['cart' => $cart]);
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $this->assertEquals('$10;%10', $result);
     }
 }

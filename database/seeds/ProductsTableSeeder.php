@@ -14,6 +14,7 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         $data = [
+            0,
             49.45,
             49.99,
             49,

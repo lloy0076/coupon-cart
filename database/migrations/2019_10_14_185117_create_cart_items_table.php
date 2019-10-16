@@ -13,14 +13,17 @@ class CreateCartItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cart_items', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('cart_id')->unsigned();
-            $table->bigInteger('product_id')->unsigned();
-            $table->integer('quantity')->unsigned();
-            $table->decimal('price_inc', 8, 2);
-            $table->timestamps();
-        });
+        Schema::create('cart_items',
+            function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->bigInteger('cart_id')->unsigned();
+                $table->bigInteger('product_id')->unsigned();
+                $table->integer('quantity')->unsigned();
+                $table->decimal('price_inc', 8, 2);
+                $table->timestamps();
+
+                $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
+            });
     }
 
     /**
@@ -30,6 +33,13 @@ class CreateCartItemsTable extends Migration
      */
     public function down()
     {
+        Schema::table('cart_items', function(Blueprint $table)
+        {
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign(['cart_id']);
+            }
+        });
+
         Schema::dropIfExists('cart_items');
     }
 }
