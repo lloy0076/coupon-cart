@@ -28,7 +28,6 @@ class CouponRulesAndDiscountsSeeder extends Seeder
         $coupon = factory(Coupon::class)->create([
             'coupon_code'     => 'FIXED10',
             'display_name'    => 'Fixed 10',
-            'stop_processing' => true,
         ]);
 
         $couponRules = [
@@ -68,7 +67,6 @@ class CouponRulesAndDiscountsSeeder extends Seeder
         $coupon = factory(Coupon::class)->create([
             'coupon_code'     => 'PERCENT10',
             'display_name'    => 'Percent 10',
-            'stop_processing' => true,
         ]);
 
         $couponRules = [
@@ -110,7 +108,6 @@ class CouponRulesAndDiscountsSeeder extends Seeder
         $coupon = factory(Coupon::class)->create([
             'coupon_code'     => 'MIXED10',
             'display_name'    => 'Mixed 10',
-            'stop_processing' => true,
         ]);
 
         $couponRules = [
@@ -150,7 +147,6 @@ class CouponRulesAndDiscountsSeeder extends Seeder
         $coupon = factory(Coupon::class)->create([
             'coupon_code'     => 'REJECTED10',
             'display_name'    => 'Rejected 10',
-            'stop_processing' => true,
         ]);
 
         $couponRules = [

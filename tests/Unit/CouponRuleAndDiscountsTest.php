@@ -47,7 +47,6 @@ class CouponRuleAndDiscountsTest extends TestCase
         $coupon = $coupon->first();
 
         $this->assertEquals("Fixed 10", $coupon->display_name);
-        $this->assertTrue((bool)$coupon->stop_processing);
 
         $couponExpression = $coupon->coupon_rule_expression;
         $this->assertEquals("cart.grossCartCost() > 50 and cart.numberOfCartItems() > 0", $couponExpression);
@@ -86,7 +85,6 @@ class CouponRuleAndDiscountsTest extends TestCase
         $coupon = $coupon->first();
 
         $this->assertEquals("Percent 10", $coupon->display_name);
-        $this->assertTrue((bool)$coupon->stop_processing);
 
         $couponExpression = $coupon->coupon_rule_expression;
         $this->assertEquals('cart.numberOfCartItems() > 1 and cart.grossCartCost() > 100', $couponExpression);
@@ -125,7 +123,6 @@ class CouponRuleAndDiscountsTest extends TestCase
         $coupon = $coupon->first();
 
         $this->assertEquals("Mixed 10", $coupon->display_name);
-        $this->assertTrue((bool)$coupon->stop_processing);
 
         $couponExpression = $coupon->coupon_rule_expression;
         $this->assertEquals('cart.grossCartCost() > 200 and cart.numberOfCartItems() > 2', $couponExpression);
@@ -164,7 +161,6 @@ class CouponRuleAndDiscountsTest extends TestCase
         $coupon = $coupon->first();
 
         $this->assertEquals("Rejected 10", $coupon->display_name);
-        $this->assertTrue((bool)$coupon->stop_processing);
 
         $couponExpression = $coupon->coupon_rule_expression;
         $this->assertEquals('cart.grossCartCost() > 1000', $couponExpression);

@@ -13,7 +13,5 @@ $factory->define(Coupon::class, function (Faker $faker) {
         'coupon_code' => "Code $number",
         'display_name' => "Rule $number",
         'order' => 1,
-        'stop_processing' => true,
-        'rule_group' => Coupon::RULE_GROUP_DEFAULT,
     ];
 });
