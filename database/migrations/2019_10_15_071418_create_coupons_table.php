@@ -19,8 +19,6 @@ class CreateCouponsTable extends Migration
             $table->string('display_name', 255);
             $table->string('coupon_code', 255);
             $table->integer('order')->nullable();
-            $table->boolean('stop_processing');
-            $table->string('rule_group', 255)->nullable()->default('default');
             $table->timestamps();
         });
     }
