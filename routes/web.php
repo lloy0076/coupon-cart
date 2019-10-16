@@ -11,6 +11,7 @@
 |
 */
 
+use App\Constants;
 
 Auth::routes();
 
@@ -18,10 +19,13 @@ Route::group([
     'middleware' => ['web'],
 ],
     function () {
+        $roleString = sprintf('role:%s', Constants::ROLE_ADMIN);
+
         Route::get('/',
             function () {
                 return view('welcome');
             });
 
         Route::get('/home', 'HomeController@index')->name('home');
+        Route::get('/coupons', 'HomeController@coupons')->middleware($roleString)->name('coupons');
     });
