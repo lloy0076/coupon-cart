@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants;
 use Illuminate\Http\Request;
 
 /*
@@ -13,6 +14,18 @@ use Illuminate\Http\Request;
 |
 */
 
+$roleString = sprintf('role:%s', Constants::ROLE_ADMIN);
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(
+    [
+        'middleware' => ['auth:api', $roleString],
+    ],
+    function () {
+        Route::resource('coupons', 'CouponController');
+        Route::resource('couponRules', 'CouponRuleController');
+    }
+);
