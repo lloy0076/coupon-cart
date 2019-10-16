@@ -23,7 +23,14 @@ class CreateCouponRulesTable extends Migration
             $table->boolean('rule_not')->default(false)->nullable();
             $table->string('rule_operator', 255)->default('and');
             $table->timestamps();
+
+            $table->foreign('coupon_id')->references('id')->on('coupons')->onDelete('cascade');
         });
+
+        Schema::table('carts', function (Blueprint $table) {
+            $table->foreign('coupon_id')->references('id')->on('coupons');
+        });
+
     }
 
     /**
@@ -33,6 +40,18 @@ class CreateCouponRulesTable extends Migration
      */
     public function down()
     {
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('coupon_rules',
+                function (Blueprint $table) {
+                    $table->dropForeign(['coupon_id']);
+                });
+
+            Schema::table('carts',
+                function (Blueprint $table) {
+                    $table->dropForeign(['coupon_id']);
+                });
+        }
+
         Schema::dropIfExists('coupon_rules');
     }
 }

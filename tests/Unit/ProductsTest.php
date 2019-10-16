@@ -27,8 +27,8 @@ class ProductsTest extends TestCase
 
             $this->assertEquals("Item", $rest, "It should be the word 'Item'");
 
-            $this->assertEquals($expectedPrice,
-                $product->price,
+            $this->assertEquals((float)$expectedPrice,
+                (float)$product->price,
                 "The expected price $expectedPrice should be " . $product->price);
 
             $this->assertNotFalse(filter_var($product->image, FILTER_VALIDATE_URL),

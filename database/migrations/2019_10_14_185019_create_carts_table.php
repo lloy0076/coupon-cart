@@ -22,6 +22,8 @@ class CreateCartsTable extends Migration
             $table->bigInteger('coupon_id')->unsigned()->nullable();
             $table->decimal('total_inc', 8, 2);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -32,6 +34,12 @@ class CreateCartsTable extends Migration
      */
     public function down()
     {
+        Schema::table('carts', function(Blueprint $table)
+        {
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign(['user_id']);
+            }
+        });
         Schema::dropIfExists('carts');
     }
 }

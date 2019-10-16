@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Models\Cart;
-use App\Models\CartItem;
 use App\Models\Product;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -12,17 +12,9 @@ class CartAndItemsTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private $setup = true;
-
     public function testDoubleCartAndItems()
     {
         $this->seed();
-
-        $cart = new Cart();
-        $this->assertTrue($cart instanceof Cart, "It should be a cart");
-
-        $cartItem = new CartItem();
-        $this->assertTrue($cartItem instanceof CartItem, "It should be a cart item");
 
         $theCart = Cart::where("instructions", "Cart with two items")->first();
 
@@ -42,11 +34,52 @@ class CartAndItemsTest extends TestCase
         $this->assertEquals(49.00, (float)$theCart->total_inc, "The total inc should be 49.00");
     }
 
+    /**
+     * This also tests numberOfCartItems().
+     */
+    public function testExpensiveCartAndItems()
+    {
+        $this->seed();
+
+        $theCart = Cart::where("instructions", "Cart with expensive item")->first();
+
+        $this->assertNotNull($theCart, "Cart with expensive items exists");
+        $this->assertEquals(4, $theCart->numberOfCartItems(), "There should be four items");
+        $this->assertGreaterThan((float)1000.00,
+            (float)$theCart->total_inc,
+            "The total inc should be greater than 1000.00");
+    }
+
+    /**
+     * This also tests numberOfCartItems().
+     */
+    public function testSingleItemExpensiveCartAndItems()
+    {
+        $this->seed();
+
+        $theCart = Cart::where("instructions", "Cart with single expensive item")->first();
+
+        $this->assertNotNull($theCart, "Cart with expensive items exists");
+        $this->assertEquals(1, $theCart->numberOfCartItems(), "There should be four items");
+        $this->assertGreaterThan((float)1000.00,
+            (float)$theCart->total_inc,
+            "The total inc should be greater than 1000.00");
+    }
+
     public function testRemoveFromSingleCartAndItems()
     {
         $this->seed();
 
-        $cart = factory(Cart::class)->create();
+        $user = User::orderBy('id')->first();
+
+        if (true || !isset($user)) {
+            $user = factory(User::class)->create();
+        }
+
+        $cart = factory(Cart::class)->create([
+            'user_id' => $user->id,
+        ]);
+
         $this->assertTrue($cart instanceof Cart, "It should be a cart");
 
         $product = Product::orderBy('id')->first();
