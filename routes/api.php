@@ -22,7 +22,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(
     [
-        'middleware' => ['auth:api', $roleString],
+        'middleware' => ['auth:api', 'cart_create'],
+    ],
+    function () {
+        Route::resource('products', 'ProductController');
+    });
+
+Route::group(
+    [
+        'middleware' => ['auth:api', $roleString, 'cart_create'],
     ],
     function () {
         Route::resource('coupons', 'CouponController');

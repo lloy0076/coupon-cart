@@ -16,7 +16,7 @@ use App\Constants;
 Auth::routes();
 
 Route::group([
-    'middleware' => ['web'],
+    'middleware' => ['web', 'cart_create'],
 ],
     function () {
         $roleString = sprintf('role:%s', Constants::ROLE_ADMIN);
@@ -26,6 +26,9 @@ Route::group([
                 return view('welcome');
             });
 
-        Route::get('/home', 'HomeController@index')->name('home');
-        Route::get('/coupons', 'HomeController@coupons')->middleware($roleString)->name('coupons');
+        Route::get('/home', 'HomeController@index')->name('web.home');
+        Route::resource('products', 'ProductController');
+
+        // These need admin rights.
+        Route::get('/coupons', 'HomeController@coupons')->middleware($roleString)->name('web.coupons');
     });
