@@ -21,11 +21,7 @@ Route::group([
     function () {
         $roleString = sprintf('role:%s', Constants::ROLE_ADMIN);
 
-        Route::get('/',
-            function () {
-                return view('welcome');
-            });
-
+        Route::get('/', 'HomeController@index');
         Route::get('/home', 'HomeController@index')->name('web.home');
         Route::resource('products', 'ProductController');
 

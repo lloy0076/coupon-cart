@@ -8,6 +8,8 @@ This is a very basic, minimally styled shopping cart application that uses:
 * React ^16.2
 * MySQL ^5.7.19
 
+You might be looking for INSTALL.md.
+
 ## Cart Functionality
 
 * Basic "customer (_user_) registration
@@ -15,7 +17,7 @@ This is a very basic, minimally styled shopping cart application that uses:
 * Ability to manipulate a single cart:
   * Create, Retrieve, Update and Delete (_CRUD_) for the cart
 * Discounts coupons, when applicable, will apply to the cart
-* Ability to checkout, or finalise the cart
+* Ability to finalise the cart
 
 Coupons can simply be reused all the time.
 
