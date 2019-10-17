@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use jkIlluminate\Support\Facades\Log;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class Cart extends Model
@@ -51,6 +52,7 @@ class Cart extends Model
         $this->refresh();
 
         $numberOfItems = $this->cartItems->pluck('quantity')->sum();
+
         return $numberOfItems;
     }
 
@@ -193,25 +195,50 @@ class Cart extends Model
     }
 
     /**
+     * Calculate sum of the items.
+     */
+    public function grossCartCost()
+    {
+        return $this->cartItems->sum->price_inc;
+    }
+
+    /**
      * Apply the given coupon.
      *
      * @param \App\Models\Coupon $coupon
      * @return \App\Models\Cart
      * @throws \Throwable
      */
-    public function applyCoupon(Coupon $coupon) {
+    public function applyCoupon(Coupon $coupon)
+    {
         return DB::transaction(function () use ($coupon) {
             $coupon->carts()->save($this);
+
             return $this->recalculateTotals();
         });
     }
 
     /**
-     * Calculate sum of the items.
+     * Remove any coupons.
+     *
+     * @return mixed
+     * @throws \Throwable
      */
-    public function grossCartCost()
+    public function removeCoupons()
     {
-        return $this->cartItems->sum->price_inc;
+        return DB::transaction(function () {
+            $this->coupon_id = null;
+
+            $didSave = $this->save();
+
+            if (!$didSave) {
+                throw new Exception("Failed to save whilst removing coupon");
+            }
+
+            $this->refresh();
+
+            return $this->recalculateTotals();
+        });
     }
 
     /**

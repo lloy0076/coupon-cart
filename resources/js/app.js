@@ -13,3 +13,5 @@ require('./bootstrap');
  */
 
 require('./components/Coupons');
+require('./components/ProductCard');
+require('./components/ProductList');

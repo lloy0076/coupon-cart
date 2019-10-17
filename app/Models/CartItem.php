@@ -32,4 +32,14 @@ class CartItem extends Model
     {
         return $this->belongsTo(Cart::class);
     }
+
+    /**
+     * The associated product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
