@@ -32,6 +32,20 @@ You'll want to take notice the second key as you most likely will want to login 
 
 This has been tested with SQLite3, MySQL 5.7.19 and higher, as well as the in memory SQLite3 driver.
 
+## Logging In
+
+### Plain Users
+
+* jwickentower@gmail.com / testing123
+* user@example.com / testing123
+
+They have no access to the creation or management of coupons.
+
+### Admin Users
+
+* lloy0076@adam.com.au / testing123
+* admin@example.com / testing123
+
 ## Tests (Unit)
 
 There is a set of PHP unit tests; although these are "unit tests" they exercise the vast majority of functionality needed by the system.
