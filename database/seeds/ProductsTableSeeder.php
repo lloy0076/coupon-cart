@@ -28,7 +28,7 @@ class ProductsTableSeeder extends Seeder
             99.99,
             100,
             100.01,
-            100,
+            101,
             999,
             999.99,
             1000,

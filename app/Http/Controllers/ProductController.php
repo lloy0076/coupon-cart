@@ -14,7 +14,13 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        if (request()->expectsJson()) {
+            $products = Product::orderBy('name')->orderBy('id')->get();
+
+            return response()->json($products, 200);
+        } else {
+            return view('product_list');
+        }
     }
 
     /**
@@ -46,7 +52,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return response()->json($product, 200);
     }
 
     /**
