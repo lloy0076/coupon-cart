@@ -23,8 +23,8 @@ Route::group([
 
         Route::get('/', 'HomeController@index');
         Route::get('/home', 'HomeController@index')->name('web.home');
-        Route::resource('products', 'ProductController');
+        Route::resource('products', 'ProductController')->middleware('auth:web');
 
         // These need admin rights.
-        Route::get('/coupons', 'HomeController@coupons')->middleware($roleString)->name('web.coupons');
+        Route::get('/coupons', 'HomeController@coupons')->middleware(['auth:web', $roleString])->name('web.coupons');
     });

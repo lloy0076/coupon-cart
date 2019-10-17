@@ -31,5 +31,12 @@ class UsersTest extends TestCase
         $adminUser = $userModels->where('email', 'lloy0076@adam.com.au')->first();
         $this->assertNotNull($adminUser, "User exists");
         $this->assertTrue($adminUser->hasRole(Constants::ROLE_ADMIN));
+
+        $user2 = $userModels->where('email', 'user@example.com')->first();
+        $this->assertNotNull($user2, "User exists");
+
+        $adminUser2 = $userModels->where('email', 'admin@example.com')->first();
+        $this->assertNotNull($adminUser2, "User exists");
+        $this->assertTrue($adminUser2->hasRole(Constants::ROLE_ADMIN));
     }
 }
