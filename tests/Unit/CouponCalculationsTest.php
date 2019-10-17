@@ -54,6 +54,31 @@ class CouponCalculationsTest extends TestCase
         $this->assertEquals(991, $cart->total_inc, "Initial total inc should be 991");
     }
 
+    public function testRemoveCoupons()
+    {
+        $this->seed();
+
+        $cart = Cart::where('total_inc', 1001)->first();
+        $this->assertInstanceOf(Cart::class, $cart, "There should be at least one cart");
+
+        $coupon = Coupon::where('coupon_code', 'FIXED10');
+        $this->assertTrue($coupon->exists(), "The FIXED10 coupon should exist");
+
+        $coupon = $coupon->first();
+
+        $this->assertEquals(1001, $cart->total_inc, "Initial total inc should be 1001");
+
+        $result = $cart->applyCoupon($coupon);
+        $this->assertInstanceOf(Cart::class,  $result, "It should be a cart");
+
+        $this->assertEquals(991, $cart->total_inc, "Initial total inc should be 991");
+
+        $result = $cart->removeCoupons();
+        $this->assertInstanceOf(Cart::class,  $result, "It should be a cart");
+
+        $this->assertEquals(1001, $cart->total_inc, "Initial total inc should be 991");
+    }
+
     public function testFixed10LowAmount()
     {
         $this->seed();

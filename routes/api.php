@@ -25,7 +25,17 @@ Route::group(
         'middleware' => ['auth:api', 'cart_create'],
     ],
     function () {
+        Route::get('cartOp/applyCoupon/{coupon}', 'CartController@applyCoupon');
+        Route::post('cartOp/finaliseCart/{cart}', 'CartController@finaliseCart');
+        Route::get('cartOp/removeCoupons', 'CartController@removeCoupons');
+        Route::post('cartOp/{product}/{quantity?}', 'CartController@addItem');
+        Route::delete('cartOp/{cartItem}', 'CartController@removeItem');
+
+        Route::resource('carts', 'CartController');
         Route::resource('products', 'ProductController');
+
+        Route::get('coupons/byCouponCode', 'CouponController@getByCouponCode');
+        Route::resource('coupons', 'CouponController')->only(['show']);
     });
 
 Route::group(
@@ -33,7 +43,7 @@ Route::group(
         'middleware' => ['auth:api', $roleString, 'cart_create'],
     ],
     function () {
-        Route::resource('coupons', 'CouponController');
+        Route::resource('coupons', 'CouponController')->except(['show']);
         Route::resource('couponRules', 'CouponRuleController');
     }
 );

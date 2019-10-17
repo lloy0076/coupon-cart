@@ -21,6 +21,7 @@ try {
  */
 
 window.axios = require('axios');
+// axios.defaults.baseURL = 'https://coupon-cart.test:8443';
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CouponRequest;
 use App\Models\Coupon;
-use App\Models\CouponRule;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CouponController extends Controller
@@ -46,15 +43,15 @@ class CouponController extends Controller
     {
         $coupon = new Coupon();
 
-        $coupon->coupon_id = Str::uuid();
+        $coupon->coupon_id    = Str::uuid();
         $coupon->display_name = $request->input('display_name');
-        $coupon->coupon_code = $request->input('coupon_code');
-        $coupon->order = $request->input('order');
+        $coupon->coupon_code  = $request->input('coupon_code');
+        $coupon->order        = $request->input('order');
 
         $didSave = $coupon->save();
 
         if (!$didSave) {
-            throw new \Exception("Unable to save coupon with code " . $request->input('coupon_code'));
+            throw new Exception("Unable to save coupon with code " . $request->input('coupon_code'));
         }
 
         $coupon->fresh()->load(['couponRules', 'discountRules']);
@@ -73,6 +70,28 @@ class CouponController extends Controller
         $coupon->load(['couponRules', 'discountRules']);
 
         return response()->json($coupon, 200);
+    }
+
+    /**
+     * Find by coupon code.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|void
+     */
+    public function getByCouponCode(Request $request)
+    {
+        if (!$request->has('coupon_code')) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        $couponCode = $request->input('coupon_code');
+        $coupon = Coupon::where('coupon_code', $couponCode);
+
+        if (!$coupon->exists()) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        return response()->json($coupon->first(), 200);
     }
 
     /**
@@ -97,13 +116,13 @@ class CouponController extends Controller
     public function update(Request $request, Coupon $coupon)
     {
         $coupon->display_name = $request->input('display_name');
-        $coupon->coupon_code = $request->input('coupon_code');
-        $coupon->order = $request->input('order');
+        $coupon->coupon_code  = $request->input('coupon_code');
+        $coupon->order        = $request->input('order');
 
         $didSave = $coupon->save();
 
         if (!$didSave) {
-            throw new \Exception("Unable to update coupon with code " . $request->input('coupon_code'));
+            throw new Exception("Unable to update coupon with code " . $request->input('coupon_code'));
         }
 
         $coupon->fresh()->with(['couponRules', 'discountRules']);

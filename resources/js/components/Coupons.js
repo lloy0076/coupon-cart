@@ -87,14 +87,14 @@ class Coupons extends React.Component {
     }
 
     /**
-     * Get load from upstram.
+     * Get load from upstream.
      *
      * @returns {Promise<void>}
      */
     async loadData() {
         this.state.coupon = {};
 
-        let uri = "https://coupon-cart.test:8443/api/coupons";
+        let uri = "/api/coupons";
 
         this.startLoading();
 
@@ -118,7 +118,7 @@ class Coupons extends React.Component {
     async deleteCoupon(e, id) {
         this.setState({"loading": true});
 
-        let uri = "https://coupon-cart.test:8443/api/coupons/" + encodeURIComponent(id);
+        let uri = "/api/coupons/" + encodeURIComponent(id);
 
         axios.delete(uri).then((response) => {
             this.stopLoading();
@@ -141,7 +141,7 @@ class Coupons extends React.Component {
     async deleteCouponRule(e, id) {
         this.setState({"loading": true});
 
-        let uri = "https://coupon-cart.test:8443/api/couponRules/" + encodeURIComponent(id);
+        let uri = "/api/couponRules/" + encodeURIComponent(id);
 
         await axios.delete(uri).then((response) => {
             console.log(response.data);
@@ -199,7 +199,7 @@ class Coupons extends React.Component {
     async storeCoupon(e) {
         this.startLoading();
 
-        let uri = "https://coupon-cart.test:8443/api/coupons";
+        let uri = "/api/coupons";
 
         try {
             let response = await axios.post(uri, this.state.coupon);
@@ -223,7 +223,7 @@ class Coupons extends React.Component {
     async storeCouponRule(e) {
         this.startLoading();
 
-        let uri = "https://coupon-cart.test:8443/api/couponRules";
+        let uri = "/api/couponRules";
 
         try {
             let response = await axios.post(uri, this.state.subject_coupon);
@@ -277,7 +277,7 @@ class Coupons extends React.Component {
     async editCoupon(e, id) {
         this.startLoading();
 
-        let uri = "https://coupon-cart.test:8443/api/coupons/" + encodeURIComponent(id);
+        let uri = "/api/coupons/" + encodeURIComponent(id);
 
         try {
             let response = await axios.get(uri);
@@ -301,7 +301,7 @@ class Coupons extends React.Component {
     async updateCoupon(e, id) {
         this.startLoading();
 
-        let uri = "https://coupon-cart.test:8443/api/coupons/" + encodeURIComponent(id);
+        let uri = "/api/coupons/" + encodeURIComponent(id);
 
         try {
             let objClone = {...this.state.coupon, "_method": "PUT"};
@@ -371,7 +371,6 @@ class Coupons extends React.Component {
             }
 
             case "rule_not": {
-                console.log(event.target.name);
                 subject_coupon.rule_not = e.target.checked ? 1 : 0;
                 break;
             }
@@ -397,7 +396,7 @@ class Coupons extends React.Component {
     }
 
     /**
-     *
+     * Stop loading.
      */
     stopLoading() {
         this.setState({"loading": false});
